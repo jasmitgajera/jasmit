@@ -13,7 +13,7 @@ while True:
     
     print("1. Load Dataset")
     print("2. clean Dataset")
-    print("3. Visualize ")
+    print("3. Visualize Dataset ")
     print("="*100 ) 
 
     choose1 = int(input("enter your choice :-"))
@@ -47,5 +47,6 @@ while True:
       
 
     
+
 
 
