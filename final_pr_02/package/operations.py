@@ -11,7 +11,7 @@ def clean_data(df):
         print(" Data cleaned & Total Sales calculated ")
         return df
     except Exception as e :
-                print(e) 
+        print(e) 
     
     
 def calculate_metrics(df):
@@ -27,7 +27,7 @@ def calculate_metrics(df):
         print(f"Top Product : {popular_product}")
         return df
     except Exception as e :
-                print(e)    
+        print(e)    
 
 
 def filter_data(df):
@@ -50,11 +50,12 @@ def filter_data(df):
             case _:
                 print(" Invalid option")
     except Exception as e :
-                print(e)            
+        print(e)            
 
     
 def show_summary(df):
     print(" DATA SUMMARY")
     print(df.describe())
     
+
     
