@@ -1,0 +1,164 @@
+create database company2;
+use company2;
+
+-- ----------------------------------------------------- TABLE 1 -----------------------------------------------------
+
+create table CUSTOMERS (
+	CUSTOMER_ID int primary key,
+	FIRST_NAME char(123),
+	LAST_NAME CHAR(123),
+	EMAIL VARCHAR(199),
+    REGISTRATION_DATE DATE);
+    
+INSERT INTO CUSTOMERS 
+VALUES
+(1, 'Shah Rukh', 'Khan', 'srk@gmail.com', '2023-01-15'),
+(2, 'Salman', 'Khan', 'salman.khan@gmail.com', '2023-02-10'),
+(3, 'Aamir', 'Khan', 'aamir.khan@gmail.com', '2023-03-05'),
+(4, 'Amitabh', 'Bachchan', 'amitabh@gmail.com', '2023-04-12'),
+(5, 'Akshay', 'Kumar', 'akshay.kumar@gmail.com', '2023-05-20'),
+(6, 'Deepika', 'Padukone', 'deepika@gmail.com', '2023-06-18'),
+(7, 'Priyanka', 'Chopra', 'priyanka@gmail.com', '2023-07-25'),
+(8, 'Alia', 'Bhatt', 'alia.bhatt@gmail.com', '2023-08-30'),
+(9, 'Ranveer', 'Singh', 'ranveer@gmail.com', '2023-09-14'),
+(10, 'Virat', 'Kohli', 'virat.kohli@gmail.com', '2023-10-08');
+
+SELECT * FROM ORDERS;
+
+-- ----------------------------------------------------- TABLE 2 -----------------------------------------------------
+
+create table ORDERS (
+    ORDER_ID INT PRIMARY KEY,
+	CUSTOMER_ID INT,
+    ORDER_DATE DATE,
+    TOTAL_AMOUNT INT,
+    FOREIGN KEY(CUSTOMER_ID) REFERENCES CUSTOMERS(CUSTOMER_ID));
+
+INSERT INTO ORDERS VALUES
+(101, 1, '2025-01-05', 15000),  
+(102, 2, '2025-01-08', 20000), 
+(103, 3, '2025-01-10', 18000),   
+(104, 4, '2025-01-12', 22000),   
+(105, 5, '2025-01-15', 17000),  
+(106, 6, '2025-01-18', 25000),   
+(107, 7, '2025-01-20', 16000),   
+(108, 8, '2025-01-22', 14000),  
+(109, 9, '2025-01-25', 19000),
+(110, 10,'2025-01-28', 21000);   
+
+-- ----------------------------------------------------- TABLE 3 -----------------------------------------------------
+
+create table EMPLOYEES (
+	EMPLOYEE_ID int primary key,
+	FIRST_NAME char(123),
+	LAST_NAME CHAR(123),
+    DEPARTMENT VARCHAR(199),
+    HIRE_DATE DATE,
+    SALARY DECIMAL(11));
+
+INSERT INTO EMPLOYEES VALUES
+(1, 'Amitabh', 'Bachchan', 'Management', '2010-01-15', 150000.00),
+(2, 'Shah', 'Rukh Khan', 'Marketing', '2012-03-20', 140000.00),
+(3, 'Virat', 'Kohli', 'Sales', '2015-06-10', 130000.00),
+(4, 'Sachin', 'Tendulkar', 'Operations', '2008-11-05', 160000.00),
+(5, 'Aishwarya', 'Rai', 'HR', '2013-07-25', 120000.00),
+(6, 'Deepika', 'Padukone', 'Finance', '2016-09-12', 135000.00),
+(7, 'Narendra', 'Modi', 'Administration', '2005-05-26', 180000.00),
+(8, 'Akshay', 'Kumar', 'Logistics', '2011-02-18', 125000.00),
+(9, 'Priyanka', 'Chopra', 'Public Relations', '2014-10-30', 128000.00),
+(10,'Mahendra', 'Dhoni', 'Operations', '2009-08-14', 145000.00);
+
+
+-- ----------------------------------------------------- 1 INNER JOIN -----------------------------------------------------
+SELECT * FROM CUSTOMERS INNER JOIN ORDERS ON CUSTOMERS.CUSTOMER_ID = CUSTOMERS.CUSTOMER_ID;
+-- ----------------------------------------------------- 2 LEFT JOIN -----------------------------------------------------
+SELECT * FROM CUSTOMERS LEFT JOIN ORDERS ON CUSTOMERS.CUSTOMER_ID = CUSTOMERS.CUSTOMER_ID;
+-- ----------------------------------------------------- 3 RIGHT JOIN -----------------------------------------------------
+SELECT * FROM CUSTOMERS RIGHT JOIN ORDERS ON CUSTOMERS.CUSTOMER_ID = CUSTOMERS.CUSTOMER_ID;
+-- ----------------------------------------------------- 4 FULL OUTER JOIN -----------------------------------------------------
+SELECT * FROM CUSTOMERS LEFT JOIN ORDERS ON CUSTOMERS.CUSTOMER_ID = CUSTOMERS.CUSTOMER_ID
+UNION
+SELECT * FROM CUSTOMERS RIGHT JOIN ORDERS ON CUSTOMERS.CUSTOMER_ID = CUSTOMERS.CUSTOMER_ID;
+-- ----------------------------------------------------- 5 Subquery  -----------------------------------------------------
+SELECT DISTINCT c.CUSTOMER_ID, c.FIRST_NAME, c.LAST_NAME
+FROM CUSTOMERS c
+JOIN ORDERS o ON c.CUSTOMER_ID = o.CUSTOMER_ID
+WHERE o.TOTAL_AMOUNT >
+      (SELECT AVG(TOTAL_AMOUNT) FROM ORDERS);
+
+-- ----------------------------------------------------- 6 Subquery -----------------------------------------------------
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEES);
+
+-- ----------------------------------------------------- 7 Extract Year and Month from OrderDate -----------------------------------------------------
+SELECT ORDER_ID,
+       YEAR(ORDER_DATE) AS Order_Year,
+       MONTH(ORDER_DATE) AS Order_Month
+FROM ORDERS;
+
+-- ----------------------------------------------------- 8 Difference in Days -----------------------------------------------------
+SELECT ORDER_ID,
+       DATEDIFF(CURDATE(), ORDER_DATE) AS Days_Difference
+FROM ORDERS;
+
+-- ----------------------------------------------------- 9 Format OrderDate -----------------------------------------------------
+SELECT ORDER_ID,
+       DATE_FORMAT(ORDER_DATE, '%d-%b-%Y') AS Formatted_Date
+FROM ORDERS;
+
+-- ----------------------------------------------------- 10 Concatenate FirstName & LastName -----------------------------------------------------
+SELECT CUSTOMER_ID,
+       CONCAT(FIRST_NAME, ' ', LAST_NAME) AS Full_Name
+FROM CUSTOMERS;
+
+-- ----------------------------------------------------- 11 Replace part of a string -----------------------------------------------------
+SELECT FIRST_NAME,
+       REPLACE(FIRST_NAME, 'Shah', 'Jonathan') AS Replaced_Name
+FROM CUSTOMERS;
+
+-- ----------------------------------------------------- 12 Uppercase FirstName & Lowercase LastName -----------------------------------------------------
+SELECT CUSTOMER_ID,
+       UPPER(FIRST_NAME) AS FirstName_Upper,
+       LOWER(LAST_NAME) AS LastName_Lower
+FROM CUSTOMERS;
+
+-- ----------------------------------------------------- 13 Trim extra spaces from Email -----------------------------------------------------
+SELECT CUSTOMER_ID,
+       TRIM(EMAIL) AS Clean_Email
+FROM CUSTOMERS;
+
+-- ----------------------------------------------------- 14 Running Total of TotalAmount -----------------------------------------------------
+SELECT ORDER_ID,
+       TOTAL_AMOUNT,
+       SUM(TOTAL_AMOUNT) OVER (ORDER BY ORDER_ID) AS Running_Total
+FROM ORDERS;
+	
+-- ----------------------------------------------------- 15 Rank Orders by TotalAmount -----------------------------------------------------
+SELECT ORDER_ID,
+       TOTAL_AMOUNT,
+       RANK() OVER (ORDER BY TOTAL_AMOUNT DESC) AS Amount_Rank
+FROM ORDERS;
+
+-- ----------------------------------------------------- 16 Assign Discount Based on TotalAmount -----------------------------------------------------
+SELECT ORDER_ID,
+       TOTAL_AMOUNT,
+       CASE
+           WHEN TOTAL_AMOUNT > 10000 THEN '10% Discount'
+           WHEN TOTAL_AMOUNT > 500 THEN '5% Discount'
+           ELSE 'No Discount'
+       END AS Discount
+FROM ORDERS;
+
+-- ----------------------------------------------------- 17 Categorize Employees’ Salaries -----------------------------------------------------
+    
+SELECT EMPLOYEE_ID,
+       FIRST_NAME,
+       LAST_NAME,
+       SALARY,
+       CASE
+           WHEN SALARY >= 150000 THEN 'High'
+           WHEN SALARY >= 130000 THEN 'Medium'
+           ELSE 'Low'
+       END AS Salary_Level
+FROM EMPLOYEES;
